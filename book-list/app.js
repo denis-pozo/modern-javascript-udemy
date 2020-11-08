@@ -18,6 +18,21 @@ UI.prototype.addBookToList = function(book) {
   list.appendChild(row);
 }
 
+UI.prototype.showAlert = function(message, className) {
+  const div = document.createElement('div');
+  div.className = `alert ${className}`;
+  div.className = className;
+  div.appendChild(document.createTextNode(message));
+
+  const container = document.querySelector('.container');
+  const form = document.querySelector('#book-form');
+  container.insertBefore(div, form);
+
+  setTimeout(function() {
+    document.querySelector(`.${className}`).remove();
+  }, 3000);
+}
+
 UI.prototype.clearFields = function() {
   document.getElementById('title').value = '';
   document.getElementById('author').value = '';
@@ -30,9 +45,14 @@ document.getElementById('book-form').addEventListener('submit', function(e) {
   const isbn = document.getElementById('isbn').value;
   console.log(title, author, isbn);
   
-  const book = new Book(title, author, isbn);
   const ui = new UI();
-  ui.addBookToList(book);
+  if(title === '' | author === '' | isbn === '') {
+    ui.showAlert('Empty fields are not allowed', 'error');
+  } else {
+    const book = new Book(title, author, isbn);
+    ui.addBookToList(book);
+  }
+
   ui.clearFields();
 
   e.preventDefault();
